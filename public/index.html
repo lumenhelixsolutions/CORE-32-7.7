@@ -6,23 +6,64 @@
     <title>CORE32 Research Demo</title>
     <style>
       body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
-      main { max-width: 1100px; margin: 0 auto; padding: 32px; }
+      main { max-width: 1100px; margin: 0 auto; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
       .card { background: #1b1b1b; border: 1px solid #333; border-radius: 18px; padding: 20px; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+      .card h2 { margin: 0 0 16px; font-size: 1.1rem; color: #aaa; text-transform: uppercase; letter-spacing: .08em; }
+      .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 12px; }
+      label { display: flex; align-items: center; gap: 6px; }
+      input[type="text"], input[type="number"] { width: 80px; }
       input, button { padding: 10px 12px; border-radius: 10px; border: 1px solid #444; background: #222; color: #eee; }
       button { cursor: pointer; font-weight: 700; }
       pre { white-space: pre-wrap; overflow: auto; background: #050505; padding: 16px; border-radius: 14px; }
       progress { width: 100%; height: 18px; }
+      /* validator styles */
+      .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 12px; margin-bottom: 16px; }
+      .metric-box { background: #111; border: 1px solid #2a2a2a; border-radius: 12px; padding: 12px; text-align: center; }
+      .metric-box .val { font-size: 1.6rem; font-weight: 700; }
+      .metric-box .lbl { font-size: .72rem; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; }
+      table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+      th, td { padding: 7px 10px; border-bottom: 1px solid #252525; text-align: left; }
+      th { color: #888; font-weight: 600; text-transform: uppercase; font-size: .72rem; }
+      .tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .75rem; font-weight: 700; }
+      .tag-up   { background: #1a3a1a; color: #4caf50; }
+      .tag-down { background: #3a1a1a; color: #f44336; }
+      .tag-neu  { background: #2a2a1a; color: #aaa; }
+      .tag-ok   { background: #1a2a1a; color: #66bb6a; }
+      .tag-err  { background: #2a1a1a; color: #ef5350; }
+      .dir-table th, .dir-table td { text-align: right; }
+      .dir-table td:first-child, .dir-table th:first-child { text-align: left; }
     </style>
   </head>
   <body>
     <main>
       <h1>CORE32 Research Demo</h1>
+
+      <!-- ── Pipeline card ─────────────────────────────────────────── -->
       <section class="card">
-        <label>Symbol <input id="symbol" value="BTC" /></label>
-        <label><input id="synthetic" type="checkbox" checked /> use synthetic data</label>
-        <button id="run">Run pipeline</button>
+        <h2>Pipeline</h2>
+        <div class="row">
+          <label>Symbol <input id="symbol" type="text" value="BTC" /></label>
+          <label><input id="synthetic" type="checkbox" checked /> use synthetic data</label>
+          <button id="run">Run pipeline</button>
+        </div>
         <p><progress id="progress" max="100" value="0"></progress></p>
         <pre id="output">Ready.</pre>
+      </section>
+
+      <!-- ── Validator card ─────────────────────────────────────────── -->
+      <section class="card">
+        <h2>Prediction Validator</h2>
+        <div class="row">
+          <label>Symbol <input id="val-symbol" type="text" value="BTC" /></label>
+          <label><input id="val-synthetic" type="checkbox" checked /> use synthetic data</label>
+          <label>Window <input id="val-window" type="number" value="30" min="10" max="120" /></label>
+          <label>Horizon <input id="val-horizon" type="number" value="5" min="1" max="30" /></label>
+          <label>Threshold% <input id="val-threshold" type="number" value="0.5" min="0.1" max="5" step="0.1" /></label>
+          <button id="val-run">Run Backtest</button>
+        </div>
+        <p><progress id="val-progress" max="100" value="0"></progress></p>
+        <div id="val-metrics"></div>
+        <div id="val-tables"></div>
       </section>
     </main>
     <script type="module" src="/src/js/main.js"></script>

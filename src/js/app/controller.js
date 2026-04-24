@@ -2,6 +2,7 @@ import { fetchData, syntheticOHLCV } from '../data/feed.js';
 import { stateFromPrices } from '../core/math64.js';
 import { solveBatch } from '../core/solver.js';
 import { kProbeHarness, resetLadder } from '../core/rubic.js';
+import { backtestPredictions } from '../core/validator.js';
 
 export async function runCorePipeline({ symbol = 'BTC', days = 90, useSynthetic = false } = {}) {
   const data = useSynthetic ? syntheticOHLCV(240, 100) : await fetchData(symbol, days);
@@ -26,4 +27,38 @@ export function runWorkerPipeline({ state, prices, batch = 100, maxSt = 64, onPr
     worker.onerror = (err) => { worker.terminate(); reject(err); };
     worker.postMessage({ id, state, prices, batch, maxSt });
   });
+}
+
+/**
+ * Fetch (or generate) price data for `symbol` then run a rolling-window
+ * backtest, returning prediction results and scoring metrics.
+ *
+ * @param {object} opts
+ * @param {string}   [opts.symbol='BTC']
+ * @param {number}   [opts.days=90]
+ * @param {boolean}  [opts.useSynthetic=false]
+ * @param {number}   [opts.windowSize=30]
+ * @param {number}   [opts.horizon=5]
+ * @param {number}   [opts.priceThreshold=0.005]
+ * @param {Function} [opts.onProgress]
+ * @returns {Promise<{ symbol, source, points, windowSize, horizon, results, metrics }>}
+ */
+export async function runValidationPipeline({
+  symbol = 'BTC',
+  days = 90,
+  useSynthetic = false,
+  windowSize = 30,
+  horizon = 5,
+  priceThreshold = 0.005,
+  onProgress = () => {},
+} = {}) {
+  const data = useSynthetic ? syntheticOHLCV(240, 100) : await fetchData(symbol, days);
+  if (!data) throw new Error(`No data returned for ${symbol}`);
+  const { results, metrics } = backtestPredictions(data, {
+    windowSize,
+    horizon,
+    priceThreshold,
+    onProgress,
+  });
+  return { symbol: data.symbol || symbol, source: data._source, points: data.c.length, windowSize, horizon, results, metrics };
 }
