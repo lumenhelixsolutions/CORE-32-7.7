@@ -1,0 +1,22 @@
+{
+  "name": "core32-research",
+  "version": "0.1.0",
+  "description": "C.O.R.E./R.U.B.I.C. deterministic 64-dimensional modular state engine with Numobius ladder and market-feed ingestion.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "start": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "bench": "node scripts/benchmark.js",
+    "simulate": "node scripts/data_simulator.js",
+    "core:test": "node scripts/test_core.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-legacy": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
