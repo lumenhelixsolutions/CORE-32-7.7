@@ -4,7 +4,7 @@ C.O.R.E./R.U.B.I.C. is a deterministic 64-dimensional modular state engine with 
 
 ## Status
 
-This repository is a clean engineering extraction from chat-provided source notes. It replaces placeholder sections with working baseline implementations so the project can run, test, benchmark, and evolve.
+This repository is a clean engineering extraction. It replaces placeholder sections with working baseline implementations so the project can run, test, benchmark, and evolve.
 
 ## Quick Start
 
